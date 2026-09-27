@@ -1,11 +1,10 @@
 import streamlit as st
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-import json
 
 st.set_page_config(page_title="Dog Bio-Data Profile", page_icon="🐾", layout="centered")
 
-# Custom CSS for aesthetics (Photo centering, rounded corners, card design)
+# Custom CSS for aesthetics
 st.markdown("""
 <style>
     .profile-img-container {
@@ -16,7 +15,7 @@ st.markdown("""
     .profile-img {
         border-radius: 15px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        max-width: 300px; /* Isse photo choti aur perfect lagegi */
+        max-width: 300px; 
         height: auto;
         object-fit: cover;
     }
@@ -60,7 +59,6 @@ try:
     client = gspread.authorize(creds)
     sheet = client.open("DogRescueDB").sheet1
 
-    # URL se ID nikalna
     query_params = st.query_params
     url_dog_id = query_params.get("dog_id")
 
@@ -69,7 +67,6 @@ try:
         dog_data = next((item for item in records if str(item.get("Dog_ID", "")) == str(url_dog_id)), None)
         
         if dog_data:
-            # Helper to get data regardless of case
             def get_val(key):
                 return dog_data.get(key, dog_data.get(key.lower(), "N/A"))
 
@@ -79,33 +76,28 @@ try:
             location = get_val("Location")
             photo_url = get_val("Photo_URL")
             
-            # Agar sheet mein Medical aur Contact ke columns hue, toh ye dikhayega
-            medical = get_val("Medical")
-            contact = get_val("Emergency_Contact")
+            # --- Nayi Details Fetch Karna ---
+            owner = get_val("Owner_Name")
+            contact = get_val("Contact_Number")
             
-            # --- Centered Image ---
             st.markdown(f'<div class="profile-img-container"><img src="{photo_url}" class="profile-img" alt="{name}"></div>', unsafe_allow_html=True)
-            
-            # --- Title ---
             st.markdown(f'<div class="dog-name">🐾 {name.upper()}\'S PROFILE</div>', unsafe_allow_html=True)
             
-            # --- Beautiful Info Card ---
-            medical_html = f'<div class="info-item"><span class="info-label">💉 Medical Info:</span> {medical}</div>' if medical != "N/A" else ""
-            contact_html = f'<div class="info-item"><span class="info-label">📞 Emergency Contact:</span> {contact}</div>' if contact != "N/A" else ""
+            # --- Dynamic HTML for Optional Fields ---
+            owner_html = f'<div class="info-item"><span class="info-label">👤 Owner:</span> {owner}</div>' if owner != "N/A" and owner != "" else ""
+            contact_html = f'<div class="info-item"><span class="info-label">📞 Contact:</span> {contact}</div>' if contact != "N/A" and contact != "" else ""
             
             st.markdown(f"""
             <div class="info-card">
+                {owner_html}
+                {contact_html}
                 <div class="info-item"><span class="info-label">🎂 Age:</span> {age}</div>
                 <div class="info-item"><span class="info-label">🏷️ Category:</span> {dog_type}</div>
                 <div class="info-item"><span class="info-label">📍 Location:</span> {location}</div>
-                {medical_html}
-                {contact_html}
             </div>
             """, unsafe_allow_html=True)
             
-            # --- Live Google Map ---
             st.subheader("🗺️ Last Known Location")
-            # Create a Google Maps embed URL based on the Location column
             map_location = str(location).replace(" ", "+")
             map_html = f"""
             <div class="map-container">
