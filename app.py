@@ -54,7 +54,7 @@ st.markdown("""
 
 # Google Sheets Setup
 try:
-    creds_dict = json.loads(st.secrets["google_credentials_json"])
+    creds_dict = dict(st.secrets["gcp_service_account"])
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
     creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
     client = gspread.authorize(creds)
