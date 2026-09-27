@@ -24,7 +24,7 @@ if url_dog_id:
             dog_data = next((item for item in records if str(item["Dog_ID"]) == str(url_dog_id)), None)
             
             if dog_data:
-                st.image(dog_data["Photo_URL"], use_column_width=True)
+                st.image(dog_data["Photo_URL"], use_countainer_width=True)
                 st.subheader(f"{dog_data['Name']}'s Profile")
                 st.markdown(f"""
                 **Age:** {dog_data['Age']}  
