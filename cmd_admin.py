@@ -26,7 +26,7 @@ print("✅ Data saved successfully!")
 
 # !!! YAHAN APNA LIVE STREAMLIT LINK DAALNA JAB APP DEPLOY HO JAYE !!!
 # Abhi test karne ke liye 'http://localhost:8501' use kar rahe hain
-base_url = "http://localhost:8501" 
+base_url = "https://dog-qr-system-yjdwbctfpbyi2mjsuxl9sd.streamlit.app/" 
 final_url = f"{base_url}/?dog_id={dog_id}"
 
 qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_H, box_size=10, border=4)
